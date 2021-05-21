@@ -12,11 +12,11 @@ class Writer(AbstractUser):
 
 class Article(models.Model):
     created_at = models.DateTimeField(auto_now=True)
-    title = models.TextField(max_length=50)
+    title = models.CharField(max_length=50)
     content = models.TextField()
     status = models.IntegerField(choices=ArticleStatusTypes.choices(), default=1)
-    written_by = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='written_by_writer')
-    edited_by = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='edited_by_writer')
+    written_by = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='written_by_writer', unique=False)
+    edited_by = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='edited_by_writer', blank=True, null=True)
 
     def __str__(self):
         return self.title + " " + self.created_at + " " + self.status

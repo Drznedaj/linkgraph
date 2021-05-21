@@ -4,6 +4,7 @@ from django.urls import reverse
 from .forms import CustomUserCreationForm
 
 from .models import Writer, Article
+from .forms import ArticleForm
 import datetime
 
 
@@ -37,3 +38,18 @@ def register(request):
         return redirect(reverse("dashboard"))
 
     return render(request, "app/register.html", {"form": form})
+
+
+def create(request):
+
+    form = ArticleForm(request.POST or None)
+
+    if form.is_valid():
+        candidate = form.save(commit=False)
+        before = datetime.datetime.now() - datetime.timedelta(60)
+        candidate.created_at = before
+        candidate.written_by = request.user
+        candidate.save()
+        return redirect(reverse("dashboard"))
+
+    return render(request, "app/create.html", {"form": form})
