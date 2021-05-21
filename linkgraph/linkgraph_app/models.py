@@ -7,7 +7,7 @@ class Writer(AbstractUser):
     is_editor = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.username + " editor:" + self.is_editor
+        return self.username + " editor:" + str(self.is_editor)
 
 
 class Article(models.Model):

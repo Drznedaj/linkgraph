@@ -3,13 +3,25 @@ from django.contrib.auth import login
 from django.urls import reverse
 from .forms import CustomUserCreationForm
 
-# Create your views here.
+from .models import Writer, Article
+import datetime
 
 
 def dashboard(request):
+    table_data = []
+    writers = Writer.objects.all()
+    last_thirty_days = datetime.datetime.now() - datetime.timedelta(30)
+
+    for w in writers:
+        written_count = Article.objects.filter(written_by=w).count()
+        written_last_count = Article.objects.filter(written_by=w, created_at__gt=last_thirty_days).count()
+        table_data.append((w.username, written_count, written_last_count))
+
+    print(table_data)
     return render(
         request,
         "app/dashboard.html",
+        {"table_data": table_data},
     )
 
 
