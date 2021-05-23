@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for article in articles %}
+    <li>
+        {{article.title}}
+        {{article.content}}
+        <button type="submit" onclick="location.href='{% url 'approve' article.id%}'">Approve</button>
+        <button type="submit" onclick="location.href='{% url 'reject' article.id%}'">Reject</button>
+    </li>
+{% endfor %}
+<a href="{% url 'dashboard' %}">Dashboard</a>
+{% endblock %}

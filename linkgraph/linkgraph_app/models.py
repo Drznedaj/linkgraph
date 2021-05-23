@@ -19,4 +19,4 @@ class Article(models.Model):
     edited_by = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='edited_by_writer', blank=True, null=True)
 
     def __str__(self):
-        return self.title + " " + self.created_at + " " + self.status
+        return self.title + " " + str(self.created_at) + " " + ArticleStatusTypes(self.status).name

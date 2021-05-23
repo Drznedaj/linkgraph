@@ -5,7 +5,7 @@ Hello, {{ user.username|default:'Guest' }}!
 
 <div>
 
-    <table style="border:1px solid black">
+    <table border="1">
         <tr>
             <th>Writer</th>
             <th>Total articles written</th>
@@ -23,6 +23,10 @@ Hello, {{ user.username|default:'Guest' }}!
     {% if user.is_authenticated %}
     <a href="{% url 'create' %}">Create</a>
     <a href="{% url 'logout' %}">Logout</a>
+    {% if user.is_editor%}
+    <a href="{% url 'article_approval' %}">Edit atricles</a>
+    <a href="{% url 'articles_edited' %}">See edited articles</a>
+    {% endif %}
     {% else %}
     <div>Guests can't create or edit blogs, please log in / register. :)</div>
     <a href="{% url 'login' %}">Login</a>
