@@ -86,3 +86,7 @@ def reject(request, article_id):
 
     return render(request, "app/article_approval.html", {"articles": articles})
 
+
+def articles_edited(request):
+    articles = Article.objects.filter(Q(edited_by=request.user) & ~Q(status=ArticleStatusTypes.NOT_REVIEWED))
+    return render(request, "app/articles_edited.html", {"articles": articles})

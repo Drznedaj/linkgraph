@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if articles %}
+    {% for article in articles %}
+    <li>
+        {{article.title}}
+        {{article.content}}
+        {% if article.status == 1 %}
+            Not reviewed
+        {% elif article.status == 2 %}
+            Approved
+        {% else %}
+            Rejected
+        {% endif %}
+    </li>
+    {% endfor %}
+{% else %}
+    <div>No articles edited... Edit some to see them here :)</div>
+{% endif %}
+<a href="{% url 'dashboard' %}">Dashboard</a>
+{% endblock %}
