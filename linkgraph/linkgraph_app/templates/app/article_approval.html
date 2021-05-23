@@ -5,7 +5,7 @@
 {% for article in articles %}
     <li>
         {{article.title}}
-        {{article.content}}
+        <div>{{article.content}}</div>
         <button type="submit" onclick="location.href='{% url 'approve' article.id%}'">Approve</button>
         <button type="submit" onclick="location.href='{% url 'reject' article.id%}'">Reject</button>
     </li>
