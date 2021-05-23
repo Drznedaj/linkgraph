@@ -26,4 +26,27 @@ class WriterTest(TestCase):
 
     def test_is_editor_set(self):
         self.user.is_editor = True
+        self.assertIsInstance(self.user, Writer, "User is not Writer class!")
         self.assertEqual(self.user.is_editor, True, "User is_editor not set properly!")
+
+
+class ArticleTest(TestCase):
+
+    def setUp(self):
+        self.writer = get_user_model().objects.create_user(username='writer', password='12test12', email='test@example.com')
+        self.editor = get_user_model().objects.create_user(username='editor', password='12test12', email='test@example.com')
+        self.writer.save()
+        self.editor.save()
+        self.article = Article(title='Test', content='testtesttesttest', written_by=self.writer)
+        self.article.save()
+
+    def tearDown(self):
+        self.writer.delete()
+        self.editor.delete()
+        self.article.delete()
+
+    def test_editor_is_none(self):
+        self.assertIsNone(self.article.edited_by, 'Edited by field is not none before setting!')
+
+    def test_article_writer(self):
+        self.assertEqual(self.article.written_by, self.writer)
