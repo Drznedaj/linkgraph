@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model, authenticate
 from .models import Writer, Article
+from .forms import ArticleForm
 
 
 class WriterTest(TestCase):
@@ -87,3 +88,30 @@ class ViewsTest(TestCase):
         eresponse = self.editor_client.get(self.edit_url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(eresponse.status_code, 200)
+
+
+class FormsTests(TestCase):
+    def setUp(self):
+        self.writer = get_user_model().objects.create_user(username='writer', password='12test12', email='test@example.com')
+        self.article = Article(title='Test', content='testtesttesttest', written_by=self.writer)
+        self.writer.save()
+        self.article.save()
+
+    def tearDown(self):
+        self.writer.delete()
+        self.article.delete()
+
+    def test_article_form_valid(self):
+        data = {"title": 'Test', "content": 'testtesttesttest'}
+        form = ArticleForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_article_form_invalid(self):
+        long_title = ""
+
+        for i in range(55):
+            long_title += str(i)
+
+        data = {"title": long_title, "content": 'testtesttesttest'}
+        form = ArticleForm(data=data)
+        self.assertFalse(form.is_valid())
