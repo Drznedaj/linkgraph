@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model, authenticate
 from .models import Writer, Article
 
@@ -50,3 +50,40 @@ class ArticleTest(TestCase):
 
     def test_article_writer(self):
         self.assertEqual(self.article.written_by, self.writer)
+
+
+class ViewsTest(TestCase):
+
+    def setUp(self):
+        self.writer = get_user_model().objects.create_user(username='writer', password='12test12', email='test@example.com')
+        self.editor = get_user_model().objects.create_user(username='editor', password='12test12', email='test@example.com', is_editor=True)
+        self.writer.save()
+        self.editor.save()
+        self.editor_client = Client()
+        self.client.login(username='writer', password='12test12')
+        self.editor_client.login(username='editor', password='12test12')
+        self.dashboard_url = "/"
+        self.edit_url = "/article-approval/"
+        self.edited_url = "/articles-edited/"
+
+    def tearDown(self):
+        self.writer.delete()
+        self.editor.delete()
+
+    def test_dashboard_get(self):
+        response = self.client.get(self.dashboard_url)
+        eresponse = self.editor_client.get(self.dashboard_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(eresponse.status_code, 200)
+
+    def test_approval_get(self):
+        response = self.client.get(self.edit_url)
+        eresponse = self.editor_client.get(self.edit_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(eresponse.status_code, 200)
+
+    def test_edited_get(self):
+        response = self.client.get(self.edit_url)
+        eresponse = self.editor_client.get(self.edit_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(eresponse.status_code, 200)
