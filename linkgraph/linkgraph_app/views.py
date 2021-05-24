@@ -16,12 +16,12 @@ def dashboard(request):
     table_data = []
     writers = Writer.objects.all()
     last_thirty_days = timezone.now() - timezone.timedelta(days=30)
-
-    for w in writers:
-        written_by_writer = Article.objects.filter(written_by=w)
-        written_count = written_by_writer.count()
-        written_last_count = written_by_writer.filter(created_at__gt=last_thirty_days).count()
-        table_data.append((w.username, written_count, written_last_count))
+    if writers:
+        for w in writers:
+            written_by_writer = Article.objects.filter(written_by=w)
+            written_count = written_by_writer.count()
+            written_last_count = written_by_writer.filter(created_at__gt=last_thirty_days).count()
+            table_data.append((w.username, written_count, written_last_count))
 
     return render(
         request,
